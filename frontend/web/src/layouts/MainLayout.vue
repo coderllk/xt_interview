@@ -13,6 +13,10 @@
           <el-icon><User /></el-icon>
           <span>用户管理</span>
         </el-menu-item>
+        <el-menu-item index="/departments">
+          <el-icon><OfficeBuilding /></el-icon>
+          <span>部门管理</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
 
@@ -37,18 +41,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { authApi } from '@/api'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { User } from '@element-plus/icons-vue'
+import { User, OfficeBuilding } from '@element-plus/icons-vue'
 
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
 
-const activeMenu = ref('/users')
+const activeMenu = computed(() => route.path)
 
 const userName = computed(() => {
   if (userStore.userInfo?.name) {
@@ -59,7 +63,8 @@ const userName = computed(() => {
 
 const pageTitle = computed(() => {
   const titleMap: Record<string, string> = {
-    '/users': '用户管理'
+    '/users': '用户管理',
+    '/departments': '部门管理'
   }
   return titleMap[route.path] || '首页'
 })
@@ -73,7 +78,6 @@ onMounted(() => {
   if (!userStore.isLoggedIn) {
     router.push('/login')
   }
-  activeMenu.value = route.path
 })
 
 async function handleLogout() {
